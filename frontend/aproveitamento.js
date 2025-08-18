@@ -42,6 +42,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Evento para baixar PDF final
     finalDownloadButton.addEventListener('click', () => generatePDF('final'));
     
+    // Função para chamar dados do Python
+     fetch('http://localhost:5000/processar_dados', {
+     method: 'POST',
+     headers: { 'Content-Type': 'application/json' },
+     body: JSON.stringify({ dados: 'exemplo' })
+     })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error('Erro:', error));
+    
     // Função para receber dados do Python
     window.receivePythonData = function(pythonData) {
         disciplines = pythonData.map(item => ({
