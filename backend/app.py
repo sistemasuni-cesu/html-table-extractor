@@ -53,4 +53,4 @@ def upload_file():
 if __name__ == '__main__':
     os.makedirs('temp', exist_ok=True)
     os.makedirs('output', exist_ok=True)
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))  # Configuração para o Render
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 1000)))  # Configuração para o Render
