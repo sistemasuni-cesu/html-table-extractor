@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Elementos do DOM
     const processButton = document.getElementById("processButton");
+    const fileInput = document.getElementById("fileInput"); // <--- Faltava
     const organizedResults = document.getElementById('organizedResults');
     const pendingResults = document.getElementById('pendingResults');
     const finalResultsContent = document.getElementById('finalResultsContent');
@@ -34,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    //Evento para analisar o html
+    // Evento para processar arquivo enviado
     if (processButton && fileInput) {
         processButton.addEventListener("click", () => {
             const file = fileInput.files[0];
@@ -43,45 +44,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-    // Evento para finalizar ajustes
-    finalizeButton.addEventListener('click', finalizeAdjustments);
-    
-    // Evento para baixar PDF da grade organizada
-    downloadButton.addEventListener('click', () => generatePDF('organized'));
-    
-    // Evento para baixar PDF final
-    finalDownloadButton.addEventListener('click', () => generatePDF('final'));
-    
-    // Função para chamar dados do Python (Render)
-    const formData = new FormData();
-    formData.append("file", new Blob([JSON.stringify({ dados: "exemplo" })], { type: "application/json" }));
+            const formData = new FormData();
+            formData.append("file", file);
 
-    fetch("https://html-table-extractor-3.onrender.com/upload", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log("Dados recebidos:", data);
-        receivePythonData(data);
-    })
-    .catch(error => {
-        console.error("Falha na requisição:", error);
-        // Mostra resultado na tela
-                resultadoDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-
-                // Se quiser tratar de forma personalizada:
+            fetch("https://html-table-extractor-3.onrender.com/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Dados recebidos:", data);
                 receivePythonData(data);
             })
             .catch(error => {
                 console.error("Falha na requisição:", error);
-                resultadoDiv.innerHTML = `<p style="color:red;">Erro: ${error.message}</p>`;
-    });
+                alert("Erro ao processar arquivo: " + error.message);
+            });
+        });
+    }
+
+    // Eventos extras
+    finalizeButton.addEventListener('click', finalizeAdjustments);
+    downloadButton.addEventListener('click', () => generatePDF('organized'));
+    finalDownloadButton.addEventListener('click', () => generatePDF('final'));
 
     // Função para processar dados vindos do Python
     function receivePythonData(pythonData) {
