@@ -33,7 +33,16 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(`${tabId}Tab`).classList.add('active');
         });
     });
-    
+
+    //Evento para analisar o html
+    if (processButton && fileInput) {
+        processButton.addEventListener("click", () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                alert("Por favor, selecione um arquivo antes de processar!");
+                return;
+            }
+
     // Evento para finalizar ajustes
     finalizeButton.addEventListener('click', finalizeAdjustments);
     
@@ -63,6 +72,15 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .catch(error => {
         console.error("Falha na requisição:", error);
+        // Mostra resultado na tela
+                resultadoDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+
+                // Se quiser tratar de forma personalizada:
+                receivePythonData(data);
+            })
+            .catch(error => {
+                console.error("Falha na requisição:", error);
+                resultadoDiv.innerHTML = `<p style="color:red;">Erro: ${error.message}</p>`;
     });
 
     // Função para processar dados vindos do Python
