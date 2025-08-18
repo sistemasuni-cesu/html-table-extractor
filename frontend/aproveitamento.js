@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const { jsPDF } = window.jspdf;
     
     // Elementos do DOM
+    const processButton = document.getElementById("processButton");
     const organizedResults = document.getElementById('organizedResults');
     const pendingResults = document.getElementById('pendingResults');
     const finalResultsContent = document.getElementById('finalResultsContent');
