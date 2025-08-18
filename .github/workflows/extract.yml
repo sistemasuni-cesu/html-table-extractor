@@ -1,0 +1,32 @@
+name: Extrair Tabelas do HTML
+
+on:
+  push:
+    paths:
+      - 'input/**'  # Executa quando arquivos em /input forem alterados
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v2
+
+      - name: Configurar Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Instalar dependências
+        run: pip install beautifulsoup4
+
+      - name: Executar extração
+        run: python scripts/extract.py
+
+      - name: Commit das tabelas extraídas
+        run: |
+          git config --global user.name "Seu Nome"
+          git config --global user.email "seu@email.com"
+          git add output/
+          git commit -m "Atualiza tabelas extraídas" || echo "Nenhuma mudança para commit"
+          git push
