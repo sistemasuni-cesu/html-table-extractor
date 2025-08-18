@@ -42,31 +42,53 @@ document.addEventListener('DOMContentLoaded', function() {
     // Evento para baixar PDF final
     finalDownloadButton.addEventListener('click', () => generatePDF('final'));
     
-    // Função para chamar dados do Python
-     fetch('http://localhost:5000/processar_dados', {
-     method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({ dados: 'exemplo' })
-     })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.error('Erro:', error));
-    
-    // Função para receber dados do Python
-    window.receivePythonData = function(pythonData) {
-        disciplines = pythonData.map(item => ({
-            code: item.codigo || '',
-            name: item.disciplina || '',
-            hours: item.carga_horaria || '',
-            series: parseInt(item.serie) || 0,
-            dispense: item.dispensar || 'Não',
-            adaptation: item.adaptacao || 'Não',
-            enrollNow: item.matricular_agora || 'Não',
-            year: item.ano || '',
-            semester: item.semestre || '',
-            equivalent: item.equivalente || ''
-        }));
-        
+// Função para chamar dados do Python (Render)
+fetch('https://html-table-extractor-3.onrender.com/processar_dados', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ dados: 'exemplo' })
+})
+.then(response => {
+  if (!response.ok) {
+    throw new Error(`Erro HTTP: ${response.status}`);
+  }
+  return response.json();
+})
+.then(data => {
+  console.log("Dados recebidos:", data);
+  // Chama a função de processamento
+  receivePythonData(data);
+})
+.catch(error => {
+  console.error("Falha na requisição:", error);
+  // Adicione aqui tratamento de erro para o usuário
+});
+
+// Função para processar dados do Python
+function receivePythonData(pythonData) {
+  // Verifica se os dados são um array
+  if (!Array.isArray(pythonData)) {
+    console.error("Dados recebidos não são um array:", pythonData);
+    return;
+  }
+
+  // Mapeia os dados com valores padrão seguros
+  disciplines = pythonData.map(item => ({
+    code: item.codigo || '',
+    name: item.disciplina || item.nome || '',  // Adicionei fallback para 'nome'
+    hours: item.carga_horaria || item.horas || '',
+    series: parseInt(item.serie) || 0,
+    dispense: item.dispensar || 'Não',
+    adaptation: item.adaptacao || 'Não',
+    enrollNow: item.matricular_agora || 'Não',
+    year: item.ano || '',
+    semester: item.semestre || '',
+    equivalent: item.equivalente || ''
+  }));
+
+  console.log("Disciplinas processadas:", disciplines);
+  // Aqui você pode chamar a função que atualiza a UI com as disciplinas
+}
         // Organizar as disciplinas
         organizeDisciplines();
         
