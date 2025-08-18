@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', function() {
     finalDownloadButton.addEventListener('click', () => generatePDF('final'));
     
 // Função para chamar dados do Python (Render)
-fetch('https://html-table-extractor-3.onrender.com/processar_dados', {
+fetch('https://html-table-extractor-3.onrender.com/upload', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ dados: 'exemplo' })
+  body: formData({ dados: 'exemplo' })
 })
 .then(response => {
   if (!response.ok) {
