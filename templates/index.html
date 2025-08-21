@@ -7,46 +7,45 @@
 <body>
   <h1>Enviar arquivo HTML</h1>
   <form id="uploadForm" enctype="multipart/form-data">
-    <input type="file" name="file" accept=".html,.htm" required>
-    <button type="submit">Enviar</button>
-  </form>
+  <input type="file" name="file" accept=".html,.htm" required>
+  <button type="submit">Enviar</button>
+</form>
 
-  <h2>Resultado</h2>
-  <div id="resultado"></div>
+<div id="resultado"></div>
 
-  <script>
-    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+<script>
+document.getElementById("uploadForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      const formData = new FormData(e.target);
+  const formData = new FormData(e.target);
 
-      const response = await fetch("/upload", {
-        method: "POST",
-        body: formData
+  const response = await fetch("/upload", {   // ⬅️ agora vai pra /upload
+    method: "POST",
+    body: formData
+  });
+
+  const data = await response.json();
+
+  let resultadoDiv = document.getElementById("resultado");
+  resultadoDiv.innerHTML = "";
+
+  if (data.message) {
+    resultadoDiv.innerText = data.message;
+  } else {
+    data.forEach((table, index) => {
+      let tableHTML = "<h3>Tabela " + (index+1) + "</h3><table border='1'>";
+      table.forEach(row => {
+        tableHTML += "<tr>";
+        for (let col in row) {
+          tableHTML += "<td>" + row[col] + "</td>";
+        }
+        tableHTML += "</tr>";
       });
-
-      const data = await response.json();
-
-      let resultadoDiv = document.getElementById("resultado");
-      resultadoDiv.innerHTML = "";
-
-      if (data.message) {
-        resultadoDiv.innerText = data.message;
-      } else {
-        data.forEach((table, index) => {
-          let tableHTML = "<h3>Tabela " + (index+1) + "</h3><table border='1'>";
-          table.forEach(row => {
-            tableHTML += "<tr>";
-            for (let col in row) {
-              tableHTML += "<td>" + row[col] + "</td>";
-            }
-            tableHTML += "</tr>";
-          });
-          tableHTML += "</table>";
-          resultadoDiv.innerHTML += tableHTML;
-        });
-      }
+      tableHTML += "</table>";
+      resultadoDiv.innerHTML += tableHTML;
     });
+  }
+});
   </script>
 </body>
 </html>
