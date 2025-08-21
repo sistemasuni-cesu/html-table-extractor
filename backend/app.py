@@ -28,3 +28,9 @@ def upload():
         all_tables.append(df.to_dict(orient="records"))  # transforma em lista de dicionários
 
     return jsonify(all_tables)  # retorna em JSON
+    import os
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    pp.run(host="0.0.0.0", port=port)
+
