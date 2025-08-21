@@ -1,13 +1,15 @@
 from flask import Flask, request, render_template, jsonify
 from bs4 import BeautifulSoup
 import pandas as pd
-import os   # ✅ agora está importado corretamente
+import os
+from flask_cors import CORS   # importa antes
 
 app = Flask(__name__)
+CORS(app)  # habilita CORS
 
 @app.route('/')
 def index():
-    return render_template("index.html")  # sua página inicial
+    return render_template("index.html")
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -24,18 +26,12 @@ def upload():
         return jsonify({"message": "Nenhuma tabela encontrada."})
 
     all_tables = []
-    for i, table in enumerate(tables, start=1):
-        df = pd.read_html(str(table))[0]  # converte a tabela em DataFrame
-        all_tables.append(df.to_dict(orient="records"))  # lista de dicionários
+    for table in tables:
+        df = pd.read_html(str(table))[0]
+        all_tables.append(df.to_dict(orient="records"))
 
     return jsonify(all_tables)
 
-# 🚀 Configuração para rodar no Render
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Render define a porta
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
-
-from flask_cors import CORS
-
-CORS(app)  # habilita CORS para todas as rotas
-
