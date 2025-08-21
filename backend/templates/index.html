@@ -19,7 +19,7 @@
       e.preventDefault();
       const formData = new FormData(e.target);
 
-      const response = await fetch("/upload", {  // ⬅️ relativo
+      const response = await fetch("https://html-table-extractor-2.onrender.com", {  // ⬅️ relativo
         method: "POST",
         body: formData
       });
